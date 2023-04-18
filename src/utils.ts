@@ -13,6 +13,7 @@ import {
     scopeTwoCategories,
     supportedCurrencies,
     supportedDatePeriods,
+    supportedEnergyUnits,
     supportedMassUnits
 } from "./constants";
 import {
@@ -32,7 +33,7 @@ export function toTitleCase ( str : string ) {
     return startCase( toLower( str ) )
 }
 
-export function isCountryValid ( countryVal : string, countryList:string[] ) {
+export function isCountryValid ( countryVal : string, countryList : string[] ) {
     const countryValLowercase = countryVal?.trim().toLowerCase();
     return countryValLowercase === '' || countryList.indexOf( countryValLowercase ) > -1;
 }
@@ -143,7 +144,7 @@ export function isSubOrgValid ( userOrgs : UserOrg[], value : string | null ) {
     return !!userOrgs.find( ( org ) => value === org.orgName )
 }
 
-export function validateSubOrg ( record : FlatfileRecord, session : FlatfileSession, logger : any ) {
+export function computeSubOrg ( record : FlatfileRecord, session : FlatfileSession, logger : any ) {
     const userOrgs : UserOrg[] = JSON.parse( session?.env?.userOrgs as string || '{}' );
     if ( userOrgs ) {
         const subOrgValue = record.get( 'subOrganisation' )
@@ -157,41 +158,42 @@ export function validateSubOrg ( record : FlatfileRecord, session : FlatfileSess
         logger?.error( 'Expected userOrgs variables is not coming through' )
     }
 }
-export function unitMappings  (unit: string){
+
+export function unitMappings ( unit : string ) {
     let finalUnit = unit;
 
     // Exclude units where casing matters
-    if (['Ml', 'Gl', 'Tbs', 'MMBTU'].indexOf(unit) === -1) {
+    if ( ['Ml', 'Gl', 'Tbs', 'MMBTU'].indexOf( unit ) === -1 ) {
         finalUnit = unit.toLowerCase();
     }
 
-    const mappings: Record<string, string> = {
-        gals: 'gal',
-        gallon: 'gal',
-        gallons: 'gal',
-        kgs: 'kg',
-        kilogram: 'kg',
-        kilograms: 'kg',
-        lbs: 'lb',
-        pound: 'lb',
-        pounds: 'lb',
-        tonnes: 'tonne',
-        liter: 'l',
-        liters: 'l',
-        litre: 'l',
-        litres: 'l',
-        kiloliters: 'kL',
-        kilolitres: 'kL',
-        kilolitre: 'kL',
-        kiloliter: 'kL',
-        megaliters: 'Ml',
-        megalitres: 'Ml',
-        megalitre: 'Ml',
-        megaliter: 'Ml',
+    const mappings : Record<string, string> = {
+        gals       : 'gal',
+        gallon     : 'gal',
+        gallons    : 'gal',
+        kgs        : 'kg',
+        kilogram   : 'kg',
+        kilograms  : 'kg',
+        lbs        : 'lb',
+        pound      : 'lb',
+        pounds     : 'lb',
+        tonnes     : 'tonne',
+        liter      : 'l',
+        liters     : 'l',
+        litre      : 'l',
+        litres     : 'l',
+        kiloliters : 'kL',
+        kilolitres : 'kL',
+        kilolitre  : 'kL',
+        kiloliter  : 'kL',
+        megaliters : 'Ml',
+        megalitres : 'Ml',
+        megalitre  : 'Ml',
+        megaliter  : 'Ml',
     };
 
-    if (mappings[finalUnit] !== undefined) {
-        return mappings[finalUnit];
+    if ( mappings[ finalUnit ] !== undefined ) {
+        return mappings[ finalUnit ];
     }
 
     return finalUnit;
@@ -200,8 +202,17 @@ export function unitMappings  (unit: string){
 export function isMassValid ( value : string ) {
     let inputUnitValue = unitMappings( value.trim() )
     if ( supportedMassUnits.includes( inputUnitValue ) || inputUnitValue.toUpperCase() === MMBTU ) {
-        return {valid:true,castedValue:inputUnitValue.toUpperCase() === MMBTU ? MMBTU : inputUnitValue}
-    }else{
-        return {valid:false, castedValue :null}
+        return { valid : true, castedValue : inputUnitValue.toUpperCase() === MMBTU ? MMBTU : inputUnitValue }
+    } else {
+        return { valid : false, castedValue : null }
+    }
+}
+
+export function isEnergyValid ( value : string ) {
+    let inputUnitValue = value?.trim() as string;
+    if ( supportedEnergyUnits.indexOf( inputUnitValue ) > -1 ) {
+        return { valid : true, castedValue : inputUnitValue }
+    } else {
+        return { valid : false, castedValue : null }
     }
 }

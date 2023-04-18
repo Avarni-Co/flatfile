@@ -20,7 +20,7 @@ import {
     FlatfileRecord,
     FlatfileSession
 } from '@flatfile/hooks';
-import { validateSubOrg } from '../utils';
+import { computeSubOrg } from '../utils';
 
 export type  SpendEntryFlatfileRecordKeys = keyof SpendEntryFlatfileRecord
 export interface SpendEntryFlatfileRecord {
@@ -53,7 +53,7 @@ export const AvSpendWithSubOrgSheet = new Sheet('Spend With SubOrg Sheet', {
     subOrganisation:AvTextField({required:false,label:"Sub-Organisation",}),
 } as {[index in keyof SpendEntryFlatfileRecord]:AnyField}, {
     recordCompute: (record: FlatfileRecord, session: FlatfileSession,logger) => {
-        validateSubOrg(record,session,logger)
+        computeSubOrg(record,session,logger)
     },
 })
 

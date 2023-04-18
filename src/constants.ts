@@ -4306,3 +4306,4 @@ export const currencyExchangeRates: Record<string, CurrencyExchangeRate[]> = {
 };
 export const MMBTU= 'MMBTU'
 export const supportedMassUnits= [...convertibles( 'kL' ),...convertibles( 'kg' ),MMBTU]
+export const supportedEnergyUnits= convertibles( 'kWh' );

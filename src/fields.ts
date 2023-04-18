@@ -12,6 +12,7 @@ import {
     isCurrencyValid,
     isDatePeriodValid,
     isEmissionCategoryValid,
+    isEnergyValid,
     isMassValid,
     normaliseAmount,
     toTitleCase,
@@ -86,6 +87,17 @@ export const AvMassField = makeField(TextField({}),{
         if(!valid)return [new Message(`Supported units are: ${supportedMassUnits.join( ' / ' )}`,'error','validate')]
     },
 })
+export const AvEnergyField = makeField(TextField({}),{
+    cast:trimValue((value:Value)=>{
+        if(!value) return value;
+        const { valid,castedValue } = isEnergyValid(value);
+        return valid?castedValue:value;
+    }),
+    validate: (value: string) => {
+        const { valid } = isEnergyValid(value);
+        if(!valid)return [new Message(`Supported units are: ${supportedMassUnits.join( ' / ' )}`,'error','validate')]
+    },
+})
 
 
 
@@ -123,9 +135,8 @@ export const AvEmissionCategoryTextField = (scope:EmissionScope)=>makeField(Text
         if(!isEmissionCategoryValid(value, scope)) {
             const categoryScope = getCategoryScope(value);
             const scopeCategories = getScopeCategories(scope);
-            const categoryIdentStr = categoryScope ? ` - ${value} is a scope ${categoryScope} category - ` : '';
 
-            return [ new Message( `Invalid category ${categoryIdentStr}. If scope is ${scope}, this value must be one of: [ ${scopeCategories.join(
+            return [ new Message( `Not a valid scope ${categoryScope} category. Valid categories are : [ ${scopeCategories.join(
                 ' / ',
             )}]`, 'error', 'validate' ) ]
 

@@ -14,7 +14,7 @@ import {
     FlatfileRecord,
     FlatfileSession
 } from '@flatfile/hooks';
-import { validateSubOrg } from '../utils';
+import { computeSubOrg } from '../utils';
 
 export interface FuelEntryFlatfileRecord {
     amount:string,
@@ -42,7 +42,7 @@ export const AvFuelWithSubOrgSheet = new Sheet('Fuel With SubOrg Sheet', {
     subOrganisation:AvTextField({required:false,label:"Sub-Organisation",}),
 } as {[index in keyof FuelEntryFlatfileRecord]:AnyField}, {
     recordCompute: (record: FlatfileRecord, session: FlatfileSession,logger) => {
-        validateSubOrg(record,session,logger)
+        computeSubOrg(record,session,logger)
     },
 })
 
