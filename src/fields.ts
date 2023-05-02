@@ -22,6 +22,7 @@ import {
     countries,
     supportedCurrencies,
     supportedDatePeriods,
+    supportedEnergyUnits,
     supportedMassUnits
 } from './constants';
 import { EmissionScope } from './types';
@@ -95,7 +96,7 @@ export const AvEnergyField = makeField(TextField({}),{
     }),
     validate: (value: string) => {
         const { valid } = isEnergyValid(value);
-        if(!valid)return [new Message(`Supported units are: ${supportedMassUnits.join( ' / ' )}`,'error','validate')]
+        if(!valid)return [new Message(`Supported units are: ${supportedEnergyUnits.join( ' / ' )}`,'error','validate')]
     },
 })
 

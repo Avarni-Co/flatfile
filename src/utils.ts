@@ -153,7 +153,7 @@ export function normaliseAmount ( value : string ) {
 
     if ( match ) {
         // Parse the matched value as a float and make it positive using Math.abs()
-        const number = Math.abs( parseFloat( match[ 0 ] ) );
+        const number = parseFloat( match[ 0 ] ) ;
         return number.toFixed( 2 );
     }
 
