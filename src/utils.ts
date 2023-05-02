@@ -162,7 +162,7 @@ export function normaliseAmount ( value : string ) {
 
 export function isSubOrgValid ( userOrgs : UserOrg[], value : string | null ) {
     if ( !value ) return false;
-    return !!userOrgs.find( ( org ) => value === org.orgName )
+    return !!userOrgs.find( ( org ) => value.toLowerCase() === org.orgName.toLowerCase() )
 }
 
 export function computeSubOrg ( record : FlatfileRecord, session : FlatfileSession, logger : any ) {
