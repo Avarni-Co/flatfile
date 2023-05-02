@@ -4,9 +4,7 @@ import {
     toUpper
 } from "lodash";
 import {
-    countries,
     dateFormats,
-    emissionDateFormats,
     MMBTU,
     scopeOneCategories,
     scopeThreeCategories,
@@ -27,7 +25,6 @@ import {
     FlatfileRecord,
     FlatfileSession
 } from '@flatfile/hooks';
-import { convertibles } from './unitConversion';
 
 export function toTitleCase ( str : string ) {
     return startCase( toLower( str ) )
@@ -85,36 +82,60 @@ export function arrayToObject ( strings : string[], transformer : ( str : string
     return result;
 }
 
-export const validateDate = ( value : string ) : { value : string | null, error : null | Array<Message> } => {
-    const delimiter = extractDelimiter( value );
-    const validDateFormats = emissionDateFormats.map( s => s.replace( /\//g, delimiter ) )
-    const dateObject = moment( value, validDateFormats, true );
-    if ( moment( value, dateFormats.YearFormat, true ).isValid() ) {
-        return {
-            value : dateObject.format( dateFormats.YearFormat ),
-            error : null
-        }
-    } else if ( dateObject.isValid() ) {
+export const validateDate = ( dateValue : string ) : { value : string | null, error : null | Array<Message> } => {
+
+    let validDateFormats : string[] | undefined;
+
+    // Check for month and YY format
+    if ( dateValue.match( /^[a-zA-Z0-9]+[\s/\-.][0-9]{2}$/ ) ) {
+        validDateFormats = ['MMMM/YY', 'MMM/YY', 'MM/YY', 'M/YY', 'MMMM YY', 'MMM YY', 'MM YY', 'M YY'];
+    }
+
+    // Check for MM/YYYY format
+    if ( dateValue.match( /^(0[1-9]|1[0-2])(\/|-|\.)[0-9]{4}$/ ) ) {
+        validDateFormats = ['MM/YYYY'];
+    }
+
+    if ( dateValue.match( /^[0-9]{1,2}(\/|-|\.)[0-9]{1,2}(\/|-|\.)[0-9]+$/ ) ) {
+        validDateFormats = ['DD/MM/YYYY', 'DD/MM/YY', 'D/MM/YYYY', 'D/MM/YY', 'D/M/YYYY', 'D/M/YY', 'YYYY'];
+    }
+
+    if ( dateValue.match( /^((0?[1-9])|10|11|12)(\/|-|\.)((1[3-9])|(2[0-9])|(3[0-1]))(\/|-|\.).+$/ ) ) {
+        validDateFormats = ['MM/DD/YYYY', 'MM/DD/YY', 'MM/D/YYYY', 'MM/D/YY', 'M/D/YYYY', 'M/D/YY', 'YYYY'];
+    }
+
+    if ( validDateFormats ) {
+        const validDateFormatsDash = validDateFormats.map( ( f ) => f.replace( /\//g, '-' ) );
+        const validDateFormatsDot = validDateFormats.map( ( f ) => f.replace( /\//g, '.' ) );
+        validDateFormats = [...validDateFormats, ...validDateFormatsDot, ...validDateFormatsDash];
+    }
+
+    const dateObject = moment( dateValue, validDateFormats, validDateFormats !== undefined );
+
+     if ( dateObject.isValid() ) {
         return {
             value : dateObject.format( dateFormats.DateFormatToBackend ),
             error : null
         }
-    } else {
+    }else if ( moment( dateValue, dateFormats.YearFormat, true ).isValid() ) {
+         return {
+             value : dateObject.format( dateFormats.YearFormat ),
+             error : null
+         }
+     } else {
         const message = `Could not process date. Date must be in one of the following formats: ${
             validDateFormats ? validDateFormats.join( ', ' ) : ''
         }`;
-        return { value : null, error : [new Message( message, 'error', "validate" )] }
+        return {
+            value : null, error:[new Message( message, 'error', "validate" )]
+        }
     }
 }
 
-const extractDelimiter = ( dateString : string ) => {
-    for ( let i = 0; i < dateString.length; i++ ) {
-        if ( isNaN( parseInt( dateString[ i ] ) ) ) {
-            return dateString[ i ];
-        }
-    }
 
-    return '/';
+export function extractDelimiter(dateString:string) {
+    const delimiter = dateString.split(/[\d\w]+/).find(element => element.length > 0);
+    return delimiter?.[0]||null;
 }
 
 /*
@@ -149,7 +170,7 @@ export function computeSubOrg ( record : FlatfileRecord, session : FlatfileSessi
     if ( userOrgs ) {
         const subOrgValue = record.get( 'subOrganisation' )
         if ( !subOrgValue ) {
-            record.addError( ["subOrganisation"], "Sub-organisation is required" );
+            record.addWarning( ["subOrganisation"], "Sub-organisation is missing" );
         } else if ( !isSubOrgValid( userOrgs, subOrgValue as string ) ) {
             const message = userOrgs.length > 1 ? `Sub-organisation must be one of [${userOrgs.map( so => so.orgName ).join( ' | ' )}]` : `Sub-organisation must be ${userOrgs[ 0 ].orgName}`
             record.addError( ["subOrganisation"], message );
