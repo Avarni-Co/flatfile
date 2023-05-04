@@ -170,7 +170,7 @@ export function computeSubOrg ( record : FlatfileRecord, session : FlatfileSessi
     if ( userOrgs ) {
         const subOrgValue = record.get( 'subOrganisation' )
         if ( !subOrgValue ) {
-            record.addWarning( ["subOrganisation"], "Sub-organisation is missing" );
+//            record.addWarning( ["subOrganisation"], "Sub-organisation is missing" );
         } else if ( !isSubOrgValid( userOrgs, subOrgValue as string ) ) {
             const message = userOrgs.length > 1 ? `Sub-organisation must be one of [${userOrgs.map( so => so.orgName ).join( ' | ' )}]` : `Sub-organisation must be ${userOrgs[ 0 ].orgName}`
             record.addError( ["subOrganisation"], message );
