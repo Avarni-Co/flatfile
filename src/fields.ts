@@ -44,7 +44,8 @@ function addWarningIfEmpty(validator:(value:Value)=>undefined|Message[]){
 
 export const AvTextField = ( props:{required?:boolean,label?:string}={})=>makeField(TextField(),{
     cast:trimValue((value)=>value),
-...(props.required?{}:{validate:addWarningIfEmpty(()=>undefined)})
+    // enabling below will add a warning for when a field is not required, but it's left empty
+//...(props.required?{}:{validate:addWarningIfEmpty(()=>undefined)})
 })( props)
 
 
