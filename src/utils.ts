@@ -184,7 +184,7 @@ export function unitMappings ( unit : string ) {
     let finalUnit = unit;
 
     // Exclude units where casing matters
-    if ( ['Ml', 'Gl', 'Tbs', 'MMBTU'].indexOf( unit ) === -1 ) {
+    if (! ['Ml', 'Gl', 'Tbs', 'MMBTU'].includes( unit )) {
         finalUnit = unit.toLowerCase();
     }
 

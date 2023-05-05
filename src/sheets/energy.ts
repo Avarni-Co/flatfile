@@ -16,6 +16,7 @@ import {
     FlatfileSession
 } from '@flatfile/hooks';
 import { computeSubOrg } from '../utils';
+import { supportedEnergyCountries } from '../constants';
 
 export interface EnergyEntryFlatfileRecord {
     amount:string,
@@ -31,7 +32,7 @@ const energyBaseFields = {
     inputUnit:AvEnergyField({required:true,label:"Input Unit"}),
     date: AvDateField({required:true,label:'Date'}),
     category: AvTextField({required:true,label:"Location",}),
-    country:AvCountryField({countries:['united states', 'canada'], errorMessage:`Only "United States" and "Canada" are currently supported. Support for other countries coming soon.`})({required:true,label:"Country",}),
+    country:AvCountryField({countries:supportedEnergyCountries, errorMessage:`This country is not currently supported. Support for other countries coming soon.`})({required:true,label:"Country",}),
 } as {[index in EnergyEntryFlatfileRecordKeys]:AnyField};
 
 
