@@ -5,7 +5,6 @@ import {
   scopeThreeCategories,
   scopeTwoCategories,
   supportedCurrencies,
-  supportedDatePeriods,
   supportedEnergyUnits,
   supportedMassUnits
 } from './constants'
@@ -30,14 +29,6 @@ export function isEmissionCategoryValid(value: string, scope: EmissionScope) {
   return (
     countryValLowercase === '' ||
     getScopeCategories(scope).includes(countryValLowercase)
-  )
-}
-
-export function isDatePeriodValid(value: string) {
-  const datePeriodLowercase = value?.trim().toLowerCase()
-  return (
-    datePeriodLowercase === '' ||
-    supportedDatePeriods.indexOf(datePeriodLowercase) > -1
   )
 }
 
@@ -193,14 +184,13 @@ export function extractDelimiter(dateString: string) {
 export function normaliseAmount(value: string) {
   if (!value) return value
   // Remove commas from the input string
-  const cleanedInput = value.replace(/,/g, '')
+  const cleanedInput = value.replace(/[$€£¥₹,]/g, '').trim()
 
   // Match a sequence of digits (optionally preceded by a negative sign and followed by a decimal point and more digits)
-  const regex = /(-?\d+(\.\d+)?)/
+  const regex = /^(-?\d+(\.\d+)?)/
   const match = cleanedInput.match(regex)
 
   if (match) {
-    // Parse the matched value as a float and make it positive using Math.abs()
     const number = parseFloat(match[0])
     return number.toFixed(2)
   }
@@ -243,6 +233,15 @@ export function computeSubOrg(
 
 export function unitMappings(unit: string) {
   let finalUnit = unit
+
+  // Exclude units where casing matters
+  if (!['Ml', 'Gl', 'Tbs', 'MMBTU'].includes(unit)) {
+    finalUnit = unit.toLowerCase()
+  }
+
+  if (unit.toLowerCase() === 'mmbtu') {
+    finalUnit = 'MMBTU'
+  }
 
   const mappings: Record<string, string> = {
     gals: 'gal',

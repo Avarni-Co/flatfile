@@ -95,7 +95,7 @@ export const dateFormats = {
   YearMonthFormat: 'YYYY-MM',
   MonthYearFormat: 'MM/YYYY'
 }
-export const supportedDatePeriods = ['monthly', 'yearly']
+
 export const supportedCurrencies = [
   'AED',
   'AUD',
