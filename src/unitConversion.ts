@@ -1,8 +1,3 @@
-import moment from 'moment';
-import {
-  currencyExchangeRates,
-  supportedCurrencies
-} from './constants';
 import configureMeasurements, {
   AllMeasures,
   allMeasures,
@@ -20,60 +15,10 @@ import configureMeasurements, {
   Measure,
   volume,
   VolumeSystems,
-  VolumeUnits,
-} from 'convert-units';
-export type CurrencyExchangeRate = {
-  PointInTime: number;
-  InterbankRate: number;
-  InverseInterbankRate: number;
-};
-const findClosestExchangeYear = (initYear: number, rates: CurrencyExchangeRate[]) => {
-  let year = initYear;
-  const sortedRates = rates.sort((a, b) => moment(a.PointInTime).year() - moment(b.PointInTime).year());
-  const lowestYearInRates = moment(sortedRates[0].PointInTime).year();
-  while (year > lowestYearInRates) {
-    const rate = rates.find((data) => year === moment(data.PointInTime).year());
-    if (rate) return rate;
-    year -= 1;
-  }
-  return undefined;
-};
-export const convertCurrency = (inputAmount: number, inputCurrency: string, outputCurrency: string, year: number) => {
-  const twoDecimalRounding = (num: number) => Math.round((num + Number.EPSILON) * 100) / 100;
-  const output = {
-    exchangeRate: 0,
-    modifiedAmount: 0,
-  };
+  VolumeUnits
+} from 'convert-units'
 
-  if (inputCurrency in currencyExchangeRates && outputCurrency === 'USD') {
-    const rateInUSD = findClosestExchangeYear(year, currencyExchangeRates[inputCurrency]);
-    if (rateInUSD) {
-      output.exchangeRate = rateInUSD.InverseInterbankRate;
-      output.modifiedAmount = twoDecimalRounding(inputAmount / Number(rateInUSD.InverseInterbankRate));
-    }
-  } else if (inputCurrency === 'USD' && outputCurrency in currencyExchangeRates) {
-    const rateFromUSD = findClosestExchangeYear(year, currencyExchangeRates[outputCurrency]);
-    if (rateFromUSD) {
-      output.exchangeRate = rateFromUSD.InterbankRate;
-      output.modifiedAmount = twoDecimalRounding(inputAmount / Number(rateFromUSD.InterbankRate));
-    }
-  } else if (inputCurrency in currencyExchangeRates && outputCurrency in currencyExchangeRates) {
-    // convert current currency to usd first
-    const rateInUSD = findClosestExchangeYear(year, currencyExchangeRates[inputCurrency]);
-    const rateFromUSD = findClosestExchangeYear(year, currencyExchangeRates[outputCurrency]);
-    if (rateInUSD && rateFromUSD) {
-      const amountInUSD = inputAmount / Number(rateInUSD.InverseInterbankRate);
-      const amountFromUSD = amountInUSD / Number(rateFromUSD.InterbankRate);
-
-      output.exchangeRate = rateFromUSD.InterbankRate;
-      output.modifiedAmount = amountFromUSD;
-    }
-  }
-
-  return output;
-};
-
-type NewMassUnits = MassUnits | 'ton' | 'tonne';
+type NewMassUnits = MassUnits | 'ton' | 'tonne'
 const extendedMass: Measure<MassSystems, NewMassUnits> = {
   systems: {
     metric: {
@@ -81,28 +26,28 @@ const extendedMass: Measure<MassSystems, NewMassUnits> = {
       tonne: {
         name: {
           singular: 'Tonne',
-          plural: 'Tonnes',
+          plural: 'Tonnes'
         },
-        to_anchor: 1000000,
-      },
+        to_anchor: 1000000
+      }
     },
     imperial: {
       ...mass.systems.imperial,
       ton: {
         name: {
           singular: 'Ton',
-          plural: 'Tons',
+          plural: 'Tons'
         },
-        to_anchor: 2000,
-      },
-    },
+        to_anchor: 2000
+      }
+    }
   },
   anchors: {
-    ...mass.anchors,
-  },
-};
+    ...mass.anchors
+  }
+}
 
-type NewVolumeUnits = VolumeUnits | 'kL' | 'scf';
+type NewVolumeUnits = VolumeUnits | 'kL' | 'scf' | 'ccf'
 const extendedVolume: Measure<VolumeSystems, NewVolumeUnits> = {
   systems: {
     metric: {
@@ -110,28 +55,35 @@ const extendedVolume: Measure<VolumeSystems, NewVolumeUnits> = {
       kL: {
         name: {
           singular: 'Kilolitre',
-          plural: 'Kilolitres',
+          plural: 'Kilolitres'
         },
-        to_anchor: 1000,
-      },
+        to_anchor: 1000
+      }
     },
     imperial: {
       ...volume.systems.imperial,
       scf: {
         name: {
           singular: 'Standard cubic foot',
-          plural: 'Standard cubic feet',
+          plural: 'Standard cubic feet'
         },
-        to_anchor: 957.506,
+        to_anchor: 957.506
       },
-    },
+      ccf: {
+        name: {
+          singular: 'Hundred cubic foot',
+          plural: 'Hundred cubic feet'
+        },
+        to_anchor: 95750.6
+      }
+    }
   },
   anchors: {
-    ...volume.anchors,
-  },
-};
+    ...volume.anchors
+  }
+}
 
-type NewEnergyUnits = EnergyUnits | 'kwh';
+type NewEnergyUnits = EnergyUnits | 'kwh' | 'thm' | 'MMBTU'
 const extendedEnergy: Measure<EnergySystems, NewEnergyUnits> = {
   systems: {
     SI: {
@@ -139,18 +91,32 @@ const extendedEnergy: Measure<EnergySystems, NewEnergyUnits> = {
       kwh: {
         name: {
           singular: 'Kilowatt-hour',
-          plural: 'Kilowatt-hours',
+          plural: 'Kilowatt-hours'
         },
-        to_anchor: 3600000,
+        to_anchor: 3600000
       },
-    },
+      thm: {
+        name: {
+          singular: 'US therm',
+          plural: 'US therms'
+        },
+        to_anchor: 105505585.262
+      },
+      MMBTU: {
+        name: {
+          singular: 'Million british thermal unit',
+          plural: 'Million british thermal units'
+        },
+        to_anchor: 1055055852.62
+      }
+    }
   },
   anchors: {
-    ...energy.anchors,
-  },
-};
+    ...energy.anchors
+  }
+}
 
-type NewLengthUnits = LengthUnits | 'km' | 'passenger-km';
+type NewLengthUnits = LengthUnits | 'km' | 'passenger-km'
 const extendedLength: Measure<LengthSystems, NewLengthUnits> = {
   systems: {
     metric: {
@@ -158,36 +124,43 @@ const extendedLength: Measure<LengthSystems, NewLengthUnits> = {
       km: {
         name: {
           singular: 'Kilometer',
-          plural: 'Kilometers',
+          plural: 'Kilometers'
         },
-        to_anchor: 1000,
+        to_anchor: 1000
       },
       'passenger-km': {
         name: {
           singular: 'passenger-km',
-          plural: 'passenger-kms',
+          plural: 'passenger-kms'
         },
-        to_anchor: 1000,
-      },
-    },
+        to_anchor: 1000
+      }
+    }
   },
   anchors: {
-    ...length.anchors,
-  },
-};
+    ...length.anchors
+  }
+}
 
-type NewAllMeasuresUnits = Omit<AllMeasuresUnits, MassUnits | VolumeUnits | EnergyUnits> &
+type NewAllMeasuresUnits = Omit<
+  AllMeasuresUnits,
+  MassUnits | VolumeUnits | EnergyUnits
+> &
   NewMassUnits &
   NewVolumeUnits &
-  NewEnergyUnits;
+  NewEnergyUnits
 
-const convert = configureMeasurements<AllMeasures, AllMeasuresSystems, NewAllMeasuresUnits>({
+const convert = configureMeasurements<
+  AllMeasures,
+  AllMeasuresSystems,
+  NewAllMeasuresUnits
+>({
   ...allMeasures,
   mass: extendedMass,
   volume: extendedVolume,
   energy: extendedEnergy,
-  length: extendedLength,
-});
+  length: extendedLength
+})
 
 export const convertibles = (unit: string) => {
   if (
@@ -198,30 +171,7 @@ export const convertibles = (unit: string) => {
   ) {
     return convert()
       .from(unit as NewAllMeasuresUnits)
-      .possibilities();
+      .possibilities()
   }
-  return [unit];
-};
-
-export const convertToUnit = (amount: number, to: string, from: string, year: number) => {
-  if (supportedCurrencies.indexOf(to.toUpperCase()) > -1) {
-    const { modifiedAmount } = convertCurrency(amount, to, from, year);
-    return modifiedAmount;
-  }
-
-  if (
-    convert()
-      .list()
-      .map((item) => item.abbr)
-      .includes(to) &&
-    convert()
-      .list()
-      .map((item) => item.abbr)
-      .includes(from)
-  ) {
-    return convert(amount)
-      .from(from as NewAllMeasuresUnits)
-      .to(to as NewAllMeasuresUnits);
-  }
-  return amount;
-};
+  return [unit]
+}
