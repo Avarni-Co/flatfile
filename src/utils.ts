@@ -17,18 +17,18 @@ export function toTitleCase(str: string) {
   return startCase(toLower(str))
 }
 
-export function isCountryValid(countryVal: string, countryList: string[]) {
-  const countryValLowercase = countryVal?.trim().toLowerCase()
+export function isCountryValid(countryVal: string, countryList: { [key: string]: string }) {
+  const countryValLowercase = countryVal.toLowerCase()
   return (
-    countryValLowercase === '' || countryList.indexOf(countryValLowercase) > -1
-  )
+    countryValLowercase === '' || !!countryList[countryValLowercase]
+  );
 }
 
 export function isEmissionCategoryValid(value: string, scope: EmissionScope) {
-  const countryValLowercase = value?.trim().toLowerCase()
+  const emissionValLowercase = value?.trim().toLowerCase()
   return (
-    countryValLowercase === '' ||
-    getScopeCategories(scope).includes(countryValLowercase)
+    emissionValLowercase === '' ||
+    getScopeCategories(scope).includes(emissionValLowercase)
   )
 }
 
@@ -175,6 +175,17 @@ export function extractDelimiter(dateString: string) {
     .split(/[\d\w]+/)
     .find((element) => element.length > 0)
   return delimiter?.[0] || null
+}
+
+/*
+ * @normaliseCountry()
+ * Extracts the country value from the input string and ensures that the returned value transformed on the applicable countries
+ * */
+export function normaliseCountry(value: string | null, countryList: { [key: string]: string }) {
+  if (!value) return value
+  const valueLowerCase = value.toLowerCase()
+  const findCountry = countryList[valueLowerCase];
+  return toTitleCase(findCountry || value);
 }
 
 /*
