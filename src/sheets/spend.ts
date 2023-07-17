@@ -26,7 +26,7 @@ export interface SpendEntryFlatfileRecord {
 }
 const spendBaseFields = {
   vendor: AvTextField({ required: false, label: 'Vendor' }),
-  account: AvTextField({ required: true, label: 'Category' }),
+  account: AvTextField({ required: true, label: 'Account' }),
   description: AvTextField({ required: false, label: 'Description' }),
   amount: AvAmountField({ required: true, label: 'Amount' }),
   inputUnit: AvCurrencyField({

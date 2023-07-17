@@ -149,14 +149,45 @@ export const validateDate = (
     validDateFormats !== undefined
   )
 
+  const now = moment()
+
+  const minDate = '2010-01-01'
+  const pastMessage = 'This date is very far in the past'
+  const futureMessage = 'This date is in the future'
+
   if (dateObject.isValid()) {
+    if (dateObject.isAfter(now, 'year')) {
+      return {
+        value: dateValue,
+        error: [new Message(futureMessage, 'error', 'validate')]
+      }
+    }
+    if (dateObject.isBefore(minDate, 'day')) {
+      return {
+        value: dateValue,
+        error: [new Message(pastMessage, 'warn', 'validate')]
+      }
+    }
     return {
-      value: dateObject.format(dateFormats.DateFormatToBackend),
+      value: dateValue,
       error: null
     }
   } else if (moment(dateValue, dateFormats.YearFormat, true).isValid()) {
+    const yearDateObject = moment(dateValue, dateFormats.YearFormat, true)
+    if (yearDateObject.isAfter(now, 'year')) {
+      return {
+        value: dateValue,
+        error: [new Message(futureMessage, 'warn', 'validate')]
+      }
+    }
+    if (yearDateObject.isBefore(minDate, 'day')) {
+      return {
+        value: dateValue,
+        error: [new Message(pastMessage, 'warn', 'validate')]
+      }
+    }
     return {
-      value: dateObject.format(dateFormats.YearFormat),
+      value: dateValue,
       error: null
     }
   } else {
@@ -267,7 +298,10 @@ export function unitMappings(unit: string) {
     megalitre: 'Ml',
     megaliter: 'Ml',
     therms: 'thm',
-    therm: 'thm'
+    therm: 'thm',
+    'kilowatt hours': 'kWh',
+    'megawatt hours': 'MWh',
+    'gigawatt hours': 'GWh'
   }
 
   if (mappings[finalUnit] !== undefined) {
@@ -278,14 +312,13 @@ export function unitMappings(unit: string) {
 }
 
 export function isMassValid(value: string) {
-  let inputUnitValue = unitMappings(value.trim())
-  const inputUnitValueLowerCase = inputUnitValue.toLowerCase()
-  const updatedUnitValue =
-    supportedMassUnits.find((supportedUnit) => {
-      return supportedUnit.toLowerCase() === inputUnitValueLowerCase
-    }) || inputUnitValue
+  let inputUnitValue = value?.trim() as string
 
-  if (supportedMassUnits.includes(updatedUnitValue)) {
+  if (supportedMassUnits.indexOf(inputUnitValue) === -1) {
+    inputUnitValue = unitMappings(inputUnitValue)
+  }
+
+  if (supportedMassUnits.includes(inputUnitValue)) {
     return { valid: true, castedValue: inputUnitValue }
   } else {
     return { valid: false, castedValue: null }
