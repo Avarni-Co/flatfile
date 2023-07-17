@@ -1,4 +1,12 @@
 import { convertibles } from './unitConversion'
+import countriesJSON from '../assets/countries.json';
+
+interface Country {
+  alpha2Code: string;
+  alpha3Code: string;
+  name: string;
+  alternateNames: string[];
+}
 
 export const scopeOneCategories = [
   'non transport combustion',
@@ -25,7 +33,36 @@ export const scopeThreeCategories = [
   'franchises',
   'investments'
 ]
-export const supportedEnergyCountries = [
+
+const updateCountryLookup = (countryLookup: { [key: string]: string }, countryJSON?: Country) => {
+  if (!countryJSON?.name) {
+    return;
+  } else {
+    countryLookup[countryJSON.name] = countryJSON.name;
+  }
+  if (countryJSON?.alpha2Code) {
+    countryLookup[countryJSON.alpha2Code] = countryJSON.name;
+  }
+  if (countryJSON?.alpha3Code) {
+    countryLookup[countryJSON.alpha3Code] = countryJSON.name;
+  }
+  if (countryJSON?.alternateNames?.length) {
+    for (const alternateName of countryJSON.alternateNames) {
+      if (alternateName) {
+        countryLookup[alternateName] = countryJSON.name;
+      }
+    }
+  }
+};
+
+const countriesLookup: { [key: string]: string } = {};
+const supportedEnergyCountriesLookup: { [key: string]: string } = {};
+
+for (const countryJSON of countriesJSON) {
+  updateCountryLookup(countriesLookup, countryJSON);
+}
+
+const energyCountries = [
   'united states',
   'canada',
   'australia',
@@ -82,7 +119,18 @@ export const supportedEnergyCountries = [
   'turkey',
   'vietnam',
   'south africa'
-]
+];
+
+for (const energyCountry of energyCountries) {
+  const countryJSON = countriesJSON.find((countryJSON) => {
+    return countryJSON.alpha2Code === energyCountry ||
+      countryJSON.alpha3Code === energyCountry ||
+      countryJSON.name === energyCountry ||
+      countryJSON.alternateNames.indexOf(energyCountry) > -1
+  });
+  updateCountryLookup(supportedEnergyCountriesLookup, countryJSON);
+}
+
 export const scopeCategories = [
   scopeOneCategories,
   scopeTwoCategories,
@@ -151,216 +199,9 @@ export const supportedCurrencies = [
   'XPF',
   'ZAR'
 ]
-export const countries = [
-  'afghanistan',
-  'albania',
-  'algeria',
-  'andorra',
-  'angola',
-  'antigua',
-  'argentina',
-  'armenia',
-  'australia',
-  'austria',
-  'azerbaijan',
-  'bahamas',
-  'bahrain',
-  'bangladesh',
-  'barbados',
-  'belarus',
-  'belgium',
-  'belize',
-  'bermuda',
-  'benin',
-  'bhutan',
-  'bolivia',
-  'botswana',
-  'brazil',
-  'brunei',
-  'bulgaria',
-  'burkina',
-  'burundi',
-  'cambodia',
-  'cameroon',
-  'canada',
-  'cape verde',
-  'cayman islands',
-  'central african republic',
-  'chad',
-  'chile',
-  'china',
-  'colombia',
-  'comoros',
-  'congo',
-  'democratic republic congo',
-  'costa rica',
-  'croatia',
-  'cuba',
-  'cyprus',
-  'czech republic',
-  'denmark',
-  'djibouti',
-  'dominica',
-  'dominican republic',
-  'east timor',
-  'ecuador',
-  'egypt',
-  'el salvador',
-  'equatorial guinea',
-  'eritrea',
-  'estonia',
-  'ethiopia',
-  'faroe islands',
-  'fiji',
-  'finland',
-  'france',
-  'gabon',
-  'gambia',
-  'georgia',
-  'germany',
-  'ghana',
-  'gibraltar',
-  'greece',
-  'grenada',
-  'guatemala',
-  'guinea',
-  'guinea-bissau',
-  'guyana',
-  'haiti',
-  'honduras',
-  'hong kong',
-  'hungary',
-  'iceland',
-  'india',
-  'indonesia',
-  'iran',
-  'iraq',
-  'ireland',
-  'israel',
-  'italy',
-  'ivory coast',
-  'jamaica',
-  'japan',
-  'jordan',
-  'kazakhstan',
-  'kenya',
-  'kiribati',
-  'north korea',
-  'south korea',
-  'kosovo',
-  'kuwait',
-  'kyrgyzstan',
-  'laos',
-  'latvia',
-  'lebanon',
-  'lesotho',
-  'liberia',
-  'libya',
-  'liechtenstein',
-  'lithuania',
-  'luxembourg',
-  'macau',
-  'madagascar',
-  'malawi',
-  'malaysia',
-  'maldives',
-  'mali',
-  'malta',
-  'marshall islands',
-  'mauritania',
-  'mauritius',
-  'mexico',
-  'micronesia',
-  'moldova',
-  'monaco',
-  'mongolia',
-  'montenegro',
-  'morocco',
-  'mozambique',
-  'myanmar',
-  'namibia',
-  'nauru',
-  'nepal',
-  'netherlands',
-  'new zealand',
-  'nicaragua',
-  'niger',
-  'nigeria',
-  'north macedonia',
-  'norway',
-  'oman',
-  'pakistan',
-  'palau',
-  'panama',
-  'papua new guinea',
-  'paraguay',
-  'peru',
-  'philippines',
-  'poland',
-  'portugal',
-  'puerto rico',
-  'qatar',
-  'romania',
-  'russia',
-  'rwanda',
-  'st kitts & nevis',
-  'st lucia',
-  'saint vincent & the grenadines',
-  'samoa',
-  'san marino',
-  'sao tome & principe',
-  'saudi arabia',
-  'senegal',
-  'serbia',
-  'seychelles',
-  'sierra leone',
-  'singapore',
-  'slovakia',
-  'slovenia',
-  'solomon islands',
-  'somalia',
-  'south africa',
-  'south sudan',
-  'spain',
-  'sri lanka',
-  'sudan',
-  'suriname',
-  'swaziland',
-  'sweden',
-  'switzerland',
-  'syria',
-  'taiwan',
-  'tajikistan',
-  'tanzania',
-  'thailand',
-  'togo',
-  'tonga',
-  'trinidad & tobago',
-  'tunisia',
-  'turkey',
-  'turkmenistan',
-  'tuvalu',
-  'uganda',
-  'ukraine',
-  'united arab emirates',
-  'united kingdom',
-  'united states',
-  'uruguay',
-  'uzbekistan',
-  'vanuatu',
-  'vatican city',
-  'venezuela',
-  'vietnam',
-  'yemen',
-  'zambia',
-  'zimbabwe',
-  'palestine',
-  'aruba',
-  'new caledonia',
-  'french polynesia',
-  'bosnia and herzegovina',
-  'greenland'
-]
+
+export const supportedEnergyCountries: { [key: string]: string } = supportedEnergyCountriesLookup;
+export const countries: { [key: string]: string } = countriesLookup;
 
 export const supportedMassUnits = [
   ...convertibles('kL'),

@@ -9,22 +9,24 @@ import {
   isEnergyValid,
   isMassValid,
   normaliseAmount,
-  toTitleCase,
+  normaliseCountry,
   validateDate
 } from './utils'
 import {
-  countries,
   supportedCurrencies,
   supportedEnergyUnits,
   supportedMassUnits
 } from './constants'
 import { EmissionScope } from './types'
+
 type Value = string | null
+
 function trimValue(caster: (value: Value) => Value) {
   return (value: Value) => {
     return caster(value?.trim() || value)
   }
 }
+
 function addWarningIfEmpty(validator: (value: Value) => undefined | Message[]) {
   return (value: Value) => {
     if (value === null || value?.trim() === '' || value === undefined) {
@@ -128,12 +130,12 @@ export const AvCountryField = ({
   countries,
   errorMessage
 }: {
-  countries: string[]
+  countries: { [key: string]: string }
   errorMessage: string
 }) =>
   makeField(TextField(), {
     cast: trimValue((value: string | null) => {
-      return value
+      return normaliseCountry(value, countries)
     }),
     validate: addWarningIfEmpty((value: string | null) => {
       if (!value) return
