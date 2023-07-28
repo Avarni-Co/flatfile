@@ -8,7 +8,7 @@ import {
   supportedEnergyUnits,
   supportedMassUnits
 } from './constants'
-import { EmissionCategories, EmissionScope, UserOrg } from './types'
+import { EmissionCategories, EmissionScope, SubOrg } from './types'
 import { Message } from '@flatfile/configure'
 import moment from 'moment'
 import { FlatfileRecord, FlatfileSession } from '@flatfile/hooks'
@@ -240,10 +240,10 @@ export function normaliseAmount(value: string) {
   return null
 }
 
-export function isSubOrgValid(userOrgs: UserOrg[], value: string | null) {
+export function isSubOrgValid(subOrgs: SubOrg[], value: string | null) {
   if (!value) return false
-  return !!userOrgs.find(
-    (org) => value.toLowerCase() === org.orgName.toLowerCase()
+  return !!subOrgs.find(
+    (org) => value.toLowerCase() === org.name.toLowerCase()
   )
 }
 
@@ -252,24 +252,22 @@ export function computeSubOrg(
   session: FlatfileSession,
   logger: any
 ) {
-  const userOrgs: UserOrg[] = JSON.parse(
-    (session?.env?.userOrgs as string) || '{}'
+  const subOrgs: SubOrg[] = JSON.parse(
+    (session?.env?.subOrgs as string) || '{}'
   )
-  if (userOrgs) {
+  if (subOrgs) {
     const subOrgValue = record.get('subOrganisation')
-    if (!subOrgValue) {
-      //            record.addWarning( ["subOrganisation"], "Sub-organisation is missing" );
-    } else if (!isSubOrgValid(userOrgs, subOrgValue as string)) {
+    if (subOrgValue && !isSubOrgValid(subOrgs, subOrgValue as string)) {
       const message =
-        userOrgs.length > 1
-          ? `Sub-organisation must be one of [${userOrgs
-              .map((so) => so.orgName)
+      subOrgs.length > 1
+          ? `Sub-organisation must be one of [${subOrgs
+              .map((so) => so.name)
               .join(' | ')}]`
-          : `Sub-organisation must be ${userOrgs[0].orgName}`
+          : `Sub-organisation must be ${subOrgs[0].name}`
       record.addError(['subOrganisation'], message)
     }
   } else {
-    logger?.error('Expected userOrgs variables is not coming through')
+    logger?.error('Expected subOrgs variables is not coming through')
   }
 }
 

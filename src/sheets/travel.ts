@@ -18,6 +18,7 @@ export interface TravelEntryFlatfileRecord {
   distance?: string
   country: string
   emissionCategory: string
+  subOrganisation?: string
 }
 
 export type TravelEntryFlatfileRecordKeys = keyof TravelEntryFlatfileRecord
@@ -36,7 +37,8 @@ const travelBaseFields = {
   emissionCategory: AvEmissionCategoryTextField(3)({
     required: false,
     label: 'GHG Emission Category'
-  })
+  }),
+  subOrganisation: AvTextField({ required: false, label: 'Sub-Organisation' })
 } as { [index in TravelEntryFlatfileRecordKeys]: AnyField }
 
 export const AvTravelSheet = new Sheet('Travel Sheet', travelBaseFields, {
@@ -54,6 +56,8 @@ export const AvTravelSheet = new Sheet('Travel Sheet', travelBaseFields, {
         'Distance is required if start location and end location are not provided.'
       )
     }
+
+    computeSubOrg(record,session,logger)
   }
 })
 

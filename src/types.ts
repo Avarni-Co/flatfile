@@ -16,6 +16,12 @@ export interface UserOrgBase {
     emailStatus?: EUserOrgEmailStatus;
 }
 
+export interface SubOrg {
+    id: string;
+    name: string;
+    subOrgs: SubOrg[];
+}
+
 export interface UserOrg extends UserOrgBase {
     _id: string;
 }

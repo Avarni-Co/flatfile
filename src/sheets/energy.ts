@@ -33,27 +33,16 @@ const energyBaseFields = {
     date: AvDateField({required:true,label:'Date'}),
     category: AvTextField({required:true,label:"Location",}),
     country:AvCountryField({countries:supportedEnergyCountries, errorMessage:`This country is not currently supported. Support for other countries coming soon.`})({required:true,label:"Country",}),
+    subOrganisation: AvTextField({ required: false, label: 'Sub-Organisation' })
 } as {[index in EnergyEntryFlatfileRecordKeys]:AnyField};
 
-
-
-export const AvEnergySheet = new Sheet('Energy Sheet',energyBaseFields  )
-
-export const AvEnergyWithSubOrgSheet = new Sheet('Energy With SubOrg Sheet', {
-    ...energyBaseFields,
-    subOrganisation:AvTextField({required:false,label:"Sub-Organisation",}),
-} as {[index in keyof EnergyEntryFlatfileRecord]:AnyField}, {
+export const AvEnergySheet = new Sheet('Energy Sheet', energyBaseFields, {
     recordCompute: (record: FlatfileRecord, session: FlatfileSession,logger) => {
         computeSubOrg(record,session,logger)
     },
 })
 
-
 export const AvEnergyPortal = new Portal({
     name: 'Energy Portal',
     sheet: 'AvEnergySheet',
-})
-export const AvEnergyWithSubOrgPortal = new Portal({
-    name: 'Energy With SubOrg Portal',
-    sheet: 'AvEnergyWithSubOrgSheet',
 })
