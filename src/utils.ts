@@ -253,17 +253,19 @@ export function computeSubOrg(
   logger: any
 ) {
   const subOrgs: SubOrg[] = JSON.parse(
-    (session?.env?.subOrgs as string) || '{}'
+    (session?.env?.subOrgs as string) || '[]'
   )
   if (subOrgs) {
     const subOrgValue = record.get('subOrganisation')
     if (subOrgValue && !isSubOrgValid(subOrgs, subOrgValue as string)) {
-      const message =
-      subOrgs.length > 1
-          ? `Sub-organisation must be one of [${subOrgs
-              .map((so) => so.name)
-              .join(' | ')}]`
-          : `Sub-organisation must be ${subOrgs[0].name}`
+      let message = 'Organisation does not have any sub-organisations';
+      if (subOrgs.length > 1) {
+        message = `Sub-organisation must be one of [${subOrgs
+          .map((so) => so.name)
+          .join(' | ')}]`;
+      } else if (subOrgs.length > 0) {
+        message = `Sub-organisation must be ${subOrgs[0].name}`;
+      }
       record.addError(['subOrganisation'], message)
     }
   } else {
