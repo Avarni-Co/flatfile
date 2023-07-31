@@ -27,17 +27,13 @@ const fuelBaseFields = {
   country: AvCountryField({
     countries,
     errorMessage: `This country is not currently supported. Support for other countries coming soon.`
-  })({ required: true, label: 'Country' })
+  })({ required: true, label: 'Country' }),
+  subOrganisation: AvTextField({ required: false, label: 'Sub-Organisation' })
 } as { [index in FuelEntryFlatfileRecordKeys]: AnyField }
 
-export const AvFuelSheet = new Sheet('Fuel Sheet', fuelBaseFields)
-
-export const AvFuelWithSubOrgSheet = new Sheet(
-  'Fuel With SubOrg Sheet',
-  {
-    ...fuelBaseFields,
-    subOrganisation: AvTextField({ required: false, label: 'Sub-Organisation' })
-  } as { [index in keyof FuelEntryFlatfileRecord]: AnyField },
+export const AvFuelSheet = new Sheet(
+  'Fuel Sheet',
+  fuelBaseFields,
   {
     recordCompute: (
       record: FlatfileRecord,
@@ -52,8 +48,4 @@ export const AvFuelWithSubOrgSheet = new Sheet(
 export const AvFuelPortal = new Portal({
   name: 'Fuel Portal',
   sheet: 'AvFuelSheet'
-})
-export const AvFuelWithSubOrgPortal = new Portal({
-  name: 'Fuel With SubOrg Portal',
-  sheet: 'AvFuelWithSubOrgSheet'
 })

@@ -45,15 +45,13 @@ const spendBaseFields = {
     countries,
     errorMessage:
       'Could not validate this country. Please check the guide for a list of valid country names.'
-  })({ required: false, label: 'Country' })
+  })({ required: false, label: 'Country' }),
+  subOrganisation: AvTextField({ required: false, label: 'Sub-Organisation' })
 } as { [index in SpendEntryFlatfileRecordKeys]: AnyField }
 
-export const AvSpendWithSubOrgSheet = new Sheet(
-  'Spend With SubOrg Sheet',
-  {
-    ...spendBaseFields,
-    subOrganisation: AvTextField({ required: false, label: 'Sub-Organisation' })
-  } as { [index in keyof SpendEntryFlatfileRecord]: AnyField },
+export const AvSpendSheet = new Sheet(
+  'Spend Sheet',
+  spendBaseFields,
   {
     recordCompute: (
       record: FlatfileRecord,
@@ -65,13 +63,7 @@ export const AvSpendWithSubOrgSheet = new Sheet(
   }
 )
 
-export const AvSpendSheet = new Sheet('Spend Sheet', spendBaseFields)
-
 export const AvSpendPortal = new Portal({
   name: 'Spend Portal',
   sheet: 'AvSpendSheet'
-})
-export const AvSpendWithSubOrgPortal = new Portal({
-  name: 'Spend With SubOrg Portal',
-  sheet: 'AvSpendWithSubOrgSheet'
 })
