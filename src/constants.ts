@@ -118,7 +118,8 @@ const energyCountries = [
   'saudi arabia',
   'turkey',
   'vietnam',
-  'south africa'
+  'south africa',
+  'united arab emirates'
 ];
 
 for (const energyCountry of energyCountries) {
