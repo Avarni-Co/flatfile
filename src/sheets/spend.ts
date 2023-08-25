@@ -53,6 +53,7 @@ export const AvSpendSheet = new Sheet(
   'Spend Sheet',
   spendBaseFields,
   {
+    allowCustomFields: true,
     recordCompute: (
       record: FlatfileRecord,
       session: FlatfileSession,

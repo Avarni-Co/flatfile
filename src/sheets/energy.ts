@@ -37,6 +37,7 @@ const energyBaseFields = {
 } as {[index in EnergyEntryFlatfileRecordKeys]:AnyField};
 
 export const AvEnergySheet = new Sheet('Energy Sheet', energyBaseFields, {
+    allowCustomFields: true,
     recordCompute: (record: FlatfileRecord, session: FlatfileSession,logger) => {
         computeSubOrg(record,session,logger)
     },

@@ -35,6 +35,7 @@ export const AvFuelSheet = new Sheet(
   'Fuel Sheet',
   fuelBaseFields,
   {
+    allowCustomFields: true,
     recordCompute: (
       record: FlatfileRecord,
       session: FlatfileSession,
