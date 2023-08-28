@@ -42,6 +42,7 @@ const travelBaseFields = {
 } as { [index in TravelEntryFlatfileRecordKeys]: AnyField }
 
 export const AvTravelSheet = new Sheet('Travel Sheet', travelBaseFields, {
+  allowCustomFields: true,
   recordCompute: (record: FlatfileRecord, session: FlatfileSession, logger) => {
     const originLoc = record.get('originLoc')
     const destLoc = record.get('destLoc')
