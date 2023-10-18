@@ -17,11 +17,12 @@ export function toTitleCase(str: string) {
   return startCase(toLower(str))
 }
 
-export function isCountryValid(countryVal: string, countryList: { [key: string]: string }) {
+export function isCountryValid(
+  countryVal: string,
+  countryList: { [key: string]: string }
+) {
   const countryValLowercase = countryVal.toLowerCase()
-  return (
-    countryValLowercase === '' || !!countryList[countryValLowercase]
-  );
+  return countryValLowercase === '' || !!countryList[countryValLowercase]
 }
 
 export function isEmissionCategoryValid(value: string, scope: EmissionScope) {
@@ -212,11 +213,14 @@ export function extractDelimiter(dateString: string) {
  * @normaliseCountry()
  * Extracts the country value from the input string and ensures that the returned value transformed on the applicable countries
  * */
-export function normaliseCountry(value: string | null, countryList: { [key: string]: string }) {
+export function normaliseCountry(
+  value: string | null,
+  countryList: { [key: string]: string }
+) {
   if (!value) return value
   const valueLowerCase = value.toLowerCase()
-  const findCountry = countryList[valueLowerCase];
-  return toTitleCase(findCountry || value);
+  const findCountry = countryList[valueLowerCase]
+  return toTitleCase(findCountry || value)
 }
 
 /*
@@ -242,9 +246,7 @@ export function normaliseAmount(value: string) {
 
 export function isSubOrgValid(subOrgs: SubOrg[], value: string | null) {
   if (!value) return false
-  return !!subOrgs.find(
-    (org) => value.toLowerCase() === org.name.toLowerCase()
-  )
+  return !!subOrgs.find((org) => value.toLowerCase() === org.name.toLowerCase())
 }
 
 export function computeSubOrg(
@@ -258,18 +260,38 @@ export function computeSubOrg(
   if (subOrgs) {
     const subOrgValue = record.get('subOrganisation')
     if (subOrgValue && !isSubOrgValid(subOrgs, subOrgValue as string)) {
-      let message = 'Organisation does not have any sub-organisations';
+      let message = 'Organisation does not have any sub-organisations'
       if (subOrgs.length > 1) {
         message = `Sub-organisation must be one of [${subOrgs
           .map((so) => so.name)
-          .join(' | ')}]`;
+          .join(' | ')}]`
       } else if (subOrgs.length > 0) {
-        message = `Sub-organisation must be ${subOrgs[0].name}`;
+        message = `Sub-organisation must be ${subOrgs[0].name}`
       }
       record.addError(['subOrganisation'], message)
     }
   } else {
     logger?.error('Expected subOrgs variables is not coming through')
+  }
+}
+
+export function checkValidEmissionCategory(record: FlatfileRecord) {
+  const scope = record.get('scope')
+  const emissionCategory = record.get('emissionCategory')
+  if (scope && emissionCategory) {
+    if (
+      !isEmissionCategoryValid(
+        emissionCategory as string,
+        scope as EmissionScope
+      )
+    ) {
+      record.addError(
+        ['emissionCategory'],
+        `Emission category must be one of [${getScopeCategories(
+          scope as EmissionScope
+        ).join(' | ')}]`
+      )
+    }
   }
 }
 
