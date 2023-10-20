@@ -1,4 +1,10 @@
-import { makeField, Message, OptionField, TextField } from '@flatfile/configure'
+import {
+  makeField,
+  Message,
+  OptionField,
+  TextField,
+  NumberField
+} from '@flatfile/configure'
 import {
   arrayToObject,
   getCategoryScope,
@@ -143,6 +149,18 @@ export const AvCountryField = ({
       if (!valid) return [new Message(errorMessage, 'error', 'validate')]
     })
   })
+
+export const AvScopeField = makeField(NumberField({}), {
+  cast: (value) => {
+    if (!value) return null
+    return Number(value)
+  },
+  validate: (value: number) => {
+    if (value < 1 || value > 3) {
+      return [new Message('Scope must be between 1 and 3', 'error', 'validate')]
+    }
+  }
+})
 
 export const AvEmissionCategoryTextField = (scope: EmissionScope) =>
   makeField(TextField({}), {

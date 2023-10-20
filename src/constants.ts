@@ -1,11 +1,11 @@
 import { convertibles } from './unitConversion'
-import countriesJSON from '../assets/countries.json';
+import countriesJSON from '../assets/countries.json'
 
 interface Country {
-  alpha2Code: string;
-  alpha3Code: string;
-  name: string;
-  alternateNames: string[];
+  alpha2Code: string
+  alpha3Code: string
+  name: string
+  alternateNames: string[]
 }
 
 export const scopeOneCategories = [
@@ -34,32 +34,35 @@ export const scopeThreeCategories = [
   'investments'
 ]
 
-const updateCountryLookup = (countryLookup: { [key: string]: string }, countryJSON?: Country) => {
+const updateCountryLookup = (
+  countryLookup: { [key: string]: string },
+  countryJSON?: Country
+) => {
   if (!countryJSON?.name) {
-    return;
+    return
   } else {
-    countryLookup[countryJSON.name] = countryJSON.name;
+    countryLookup[countryJSON.name] = countryJSON.name
   }
   if (countryJSON?.alpha2Code) {
-    countryLookup[countryJSON.alpha2Code] = countryJSON.name;
+    countryLookup[countryJSON.alpha2Code] = countryJSON.name
   }
   if (countryJSON?.alpha3Code) {
-    countryLookup[countryJSON.alpha3Code] = countryJSON.name;
+    countryLookup[countryJSON.alpha3Code] = countryJSON.name
   }
   if (countryJSON?.alternateNames?.length) {
     for (const alternateName of countryJSON.alternateNames) {
       if (alternateName) {
-        countryLookup[alternateName] = countryJSON.name;
+        countryLookup[alternateName] = countryJSON.name
       }
     }
   }
-};
+}
 
-const countriesLookup: { [key: string]: string } = {};
-const supportedEnergyCountriesLookup: { [key: string]: string } = {};
+const countriesLookup: { [key: string]: string } = {}
+const supportedEnergyCountriesLookup: { [key: string]: string } = {}
 
 for (const countryJSON of countriesJSON) {
-  updateCountryLookup(countriesLookup, countryJSON);
+  updateCountryLookup(countriesLookup, countryJSON)
 }
 
 const energyCountries = [
@@ -120,16 +123,18 @@ const energyCountries = [
   'vietnam',
   'south africa',
   'united arab emirates'
-];
+]
 
 for (const energyCountry of energyCountries) {
   const countryJSON = countriesJSON.find((countryJSON) => {
-    return countryJSON.alpha2Code === energyCountry ||
+    return (
+      countryJSON.alpha2Code === energyCountry ||
       countryJSON.alpha3Code === energyCountry ||
       countryJSON.name === energyCountry ||
       countryJSON.alternateNames.indexOf(energyCountry) > -1
-  });
-  updateCountryLookup(supportedEnergyCountriesLookup, countryJSON);
+    )
+  })
+  updateCountryLookup(supportedEnergyCountriesLookup, countryJSON)
 }
 
 export const scopeCategories = [
@@ -148,17 +153,11 @@ export const dateFormats = {
 export const supportedCurrencies = [
   'AED',
   'AUD',
-  'AZN',
-  'BGN',
-  'BHD',
-  'BND',
-  'BRL',
   'CAD',
   'CHF',
   'CNY',
   'CZK',
   'DKK',
-  'EGP',
   'EUR',
   'GBP',
   'HKD',
@@ -167,42 +166,30 @@ export const supportedCurrencies = [
   'ILS',
   'INR',
   'JPY',
-  'KRW',
-  'KWD',
-  'LKR',
-  'MAD',
-  'MGA',
   'MXN',
   'MYR',
   'NOK',
   'NZD',
-  'OMR',
-  'PEN',
-  'PGK',
   'PHP',
   'PKR',
   'PLN',
   'SAR',
   'SBD',
   'SEK',
-  'SCR',
   'SGD',
   'THB',
   'TRY',
   'TOP',
-  'TWD',
-  'TZS',
   'USD',
-  'VND',
   'VUV',
   'WST',
-  'XOF',
   'XPF',
   'ZAR'
 ]
 
-export const supportedEnergyCountries: { [key: string]: string } = supportedEnergyCountriesLookup;
-export const countries: { [key: string]: string } = countriesLookup;
+export const supportedEnergyCountries: { [key: string]: string } =
+  supportedEnergyCountriesLookup
+export const countries: { [key: string]: string } = countriesLookup
 
 export const supportedMassUnits = [
   ...convertibles('kL'),
