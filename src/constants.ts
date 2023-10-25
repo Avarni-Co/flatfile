@@ -184,7 +184,8 @@ export const supportedCurrencies = [
   'VUV',
   'WST',
   'XPF',
-  'ZAR'
+  'ZAR',
+  'LKR'
 ]
 
 export const supportedEnergyCountries: { [key: string]: string } =
