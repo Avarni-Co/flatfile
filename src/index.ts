@@ -10,7 +10,7 @@ import {
     sheets
 } from './sheets';
 
-export default new Workbook( {
+export const MyWorkbook = new Workbook( {
     name : 'Entry Workbook',
     namespace : 'entry-workbook',
     portals,
