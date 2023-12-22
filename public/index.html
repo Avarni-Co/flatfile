@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hello, world!</title>
+    <script type="module" src="../src/client.js"></script>
+    <link rel="stylesheet" type="text/css" href="./styles.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="content">
+        <h2><code>&lt;Flatfile /&gt;</code></h2>
+        <p>Use Flatfile as an embedded table editor for existing data.</p>
+
+        <!-- Button to trigger the modal -->
+        <div>
+          <!-- Note: PUT YOUR KEY AND ENVIRONMENT_ID IN HERE -->
+          <button
+            class="contrast"
+            onclick="openFlatfileEnergy({ publishableKey: 'pk_92wkT0ljKvwl8BQulQVkvxfVnajnmnqy', environmentId: 'us_env_UbC0pFXJ' })"
+          >
+            Upload Energy
+          </button>
+          <button
+            class="contrast"
+            onclick="openFlatfileFuel({ publishableKey: 'pk_92wkT0ljKvwl8BQulQVkvxfVnajnmnqy', environmentId: 'us_env_UbC0pFXJ' })"
+          >
+            Upload Fuel
+          </button>
+          <button
+            class="contrast"
+            onclick="openFlatfileSpend({ publishableKey: 'pk_92wkT0ljKvwl8BQulQVkvxfVnajnmnqy', environmentId: 'us_env_UbC0pFXJ' })"
+          >
+            Upload Spend
+          </button>
+          <button
+            class="contrast"
+            onclick="openFlatfileTravel({ publishableKey: 'pk_92wkT0ljKvwl8BQulQVkvxfVnajnmnqy', environmentId: 'us_env_UbC0pFXJ' })"
+          >
+            Upload Travel
+          </button>
+        </div>
+      </div>
+      <div id="flatfile_iFrameContainer"></div>
+    </div>
+  </body>
+</html>
