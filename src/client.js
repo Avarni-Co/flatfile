@@ -1,13 +1,6 @@
 import { initializeFlatfile } from "@flatfile/javascript";
 import api from "@flatfile/api";
 import { FlatfileListener } from "@flatfile/listener";
-import { recordHook } from "@flatfile/plugin-record-hook";
-
-import { sheetEnergy } from './sheets/sheetEnergy'
-import { sheetFuel } from './sheets/sheetFuel'
-import { sheetSpend } from './sheets/sheetSpend'
-import { sheetTravel } from './sheets/sheetTravel'
-
 
 
 const listener = FlatfileListener.create((listener) => {
@@ -71,20 +64,19 @@ window.openFlatfileEnergy = ({ publishableKey, environmentId }) => {
     );
   }
 
-  const workbook = sheetEnergy;
-
   const flatfileOptions = {
-    name: "Embedded Space",
     publishableKey,
     environmentId,
-    workbook,
-    listener,
     closeSpace: {
       operation: "submitActionFg",
       onClose: () => setShowSpace(false),
     },
     sidebarConfig: {
       showSidebar: false,
+    },
+    spaceBody: {
+      name: "Import Energy",
+      namespace: "energy",
     },
     themeConfig: {
       root: {
@@ -109,20 +101,19 @@ window.openFlatfileFuel = ({ publishableKey, environmentId }) => {
     );
   }
 
-  const workbook = sheetFuel;
-
   const flatfileOptions = {
-    name: "Embedded Space",
     publishableKey,
     environmentId,
-    workbook,
-    listener,
     closeSpace: {
       operation: "submitActionFg",
       onClose: () => setShowSpace(false),
     },
     sidebarConfig: {
       showSidebar: false,
+    },
+    spaceBody: {
+      name: "Import Fuel",
+      namespace: "fuel",
     },
     themeConfig: {
       root: {
@@ -148,20 +139,19 @@ window.openFlatfileSpend = ({ publishableKey, environmentId }) => {
     );
   }
 
-  const workbook = sheetSpend;
-
   const flatfileOptions = {
-    name: "Embedded Space",
     publishableKey,
     environmentId,
-    workbook,
-    listener,
     closeSpace: {
       operation: "submitActionFg",
       onClose: () => setShowSpace(false),
     },
     sidebarConfig: {
       showSidebar: false,
+    },
+    spaceBody: {
+      name: "Import Spend",
+      namespace: "spend",
     },
     themeConfig: {
       root: {
@@ -187,20 +177,19 @@ window.openFlatfileTravel = ({ publishableKey, environmentId }) => {
     );
   }
 
-  const workbook = sheetTravel;
-
   const flatfileOptions = {
-    name: "Embedded Space",
     publishableKey,
     environmentId,
-    workbook,
-    listener,
     closeSpace: {
       operation: "submitActionFg",
       onClose: () => setShowSpace(false),
     },
     sidebarConfig: {
       showSidebar: false,
+    },
+    spaceBody: {
+      name: "Import Travel",
+      namespace: "travel",
     },
     themeConfig: {
       root: {
