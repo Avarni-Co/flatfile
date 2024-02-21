@@ -3,7 +3,7 @@ import {
   Message,
   OptionField,
   TextField,
-  NumberField
+  NumberField,
 } from '@flatfile/configure'
 import {
   arrayToObject,
@@ -16,12 +16,12 @@ import {
   isMassValid,
   normaliseAmount,
   normaliseCountry,
-  validateDate
+  validateDate,
 } from './utils'
 import {
   supportedCurrencies,
   supportedEnergyUnits,
-  supportedMassUnits
+  supportedMassUnits,
 } from './constants'
 import { EmissionScope } from './types'
 
@@ -46,7 +46,7 @@ export const AvTextField = (
   props: { required?: boolean; label?: string } = {}
 ) =>
   makeField(TextField(), {
-    cast: trimValue((value) => value)
+    cast: trimValue((value) => value),
     // enabling below will add a warning for when a field is not required, but it's left empty
     //...(props.required?{}:{validate:addWarningIfEmpty(()=>undefined)})
   })(props)
@@ -65,7 +65,7 @@ export const AvDateField = makeField(TextField({}), {
     if (validated.error) {
       return validated.error
     }
-  }
+  },
 })
 //export const AvCurrencyField = makeField(OptionField({options:arrayToObject(supportedCurrencies)}),{
 export const AvCurrencyField = makeField(TextField({}), {
@@ -82,9 +82,9 @@ export const AvCurrencyField = makeField(TextField({}), {
           `Currency must be one of [${supportedCurrencies.join(' / ')}]`,
           'error',
           'validate'
-        )
+        ),
       ]
-  }
+  },
 })
 
 export const AvMassField = makeField(TextField({}), {
@@ -101,9 +101,9 @@ export const AvMassField = makeField(TextField({}), {
           `Supported units are: ${supportedMassUnits.join(' / ')}`,
           'error',
           'validate'
-        )
+        ),
       ]
-  }
+  },
 })
 export const AvEnergyField = makeField(TextField({}), {
   cast: trimValue((value: Value) => {
@@ -119,22 +119,22 @@ export const AvEnergyField = makeField(TextField({}), {
           `Supported units are: ${supportedEnergyUnits.join(' / ')}`,
           'error',
           'validate'
-        )
+        ),
       ]
-  }
+  },
 })
 
 export const AvAmountField = makeField(TextField({}), {
   cast: trimValue((value: Value) => {
     if (!value) return value
     return normaliseAmount(value)
-  })
+  }),
 })
 
 //export const AvCountryField = makeField(OptionField({options:arrayToObject(countries,toTitleCase)}),{
 export const AvCountryField = ({
   countries,
-  errorMessage
+  errorMessage,
 }: {
   countries: { [key: string]: string }
   errorMessage: string
@@ -147,11 +147,27 @@ export const AvCountryField = ({
       if (!value) return
       const valid = isCountryValid(value, countries)
       if (!valid) return [new Message(errorMessage, 'error', 'validate')]
-    })
+    }),
   })
 
 export const AvScopeField = makeField(NumberField({}), {
   cast: (value) => {
+    if (typeof value === 'string') {
+      value = value.trim().toLowerCase()
+      switch (value) {
+        case '1':
+        case 'scope 1':
+          return 1
+        case '2':
+        case 'scope 2':
+          return 2
+        case '3':
+        case 'scope 3':
+          return 3
+        default:
+          return null
+      }
+    }
     if (!value) return null
     return Number(value)
   },
@@ -159,7 +175,7 @@ export const AvScopeField = makeField(NumberField({}), {
     if (value < 1 || value > 3) {
       return [new Message('Scope must be between 1 and 3', 'error', 'validate')]
     }
-  }
+  },
 })
 
 export const AvEmissionCategoryTextField = (scope: EmissionScope) =>
@@ -180,8 +196,8 @@ export const AvEmissionCategoryTextField = (scope: EmissionScope) =>
             )}]`,
             'error',
             'validate'
-          )
+          ),
         ]
       }
-    })
+    }),
   })

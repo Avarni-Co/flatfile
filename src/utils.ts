@@ -6,7 +6,7 @@ import {
   scopeTwoCategories,
   supportedCurrencies,
   supportedEnergyUnits,
-  supportedMassUnits
+  supportedMassUnits,
 } from './constants'
 import { EmissionCategories, EmissionScope, SubOrg } from './types'
 import { Message } from '@flatfile/configure'
@@ -93,7 +93,7 @@ export const validateDate = (
       'MMMM YY',
       'MMM YY',
       'MM YY',
-      'M YY'
+      'M YY',
     ]
   }
 
@@ -110,7 +110,7 @@ export const validateDate = (
       'D/MM/YY',
       'D/M/YYYY',
       'D/M/YY',
-      'YYYY'
+      'YYYY',
     ]
   }
 
@@ -126,7 +126,7 @@ export const validateDate = (
       'MM/D/YY',
       'M/D/YYYY',
       'M/D/YY',
-      'YYYY'
+      'YYYY',
     ]
   }
 
@@ -140,7 +140,7 @@ export const validateDate = (
     validDateFormats = [
       ...validDateFormats,
       ...validDateFormatsDot,
-      ...validDateFormatsDash
+      ...validDateFormatsDash,
     ]
   }
 
@@ -153,51 +153,53 @@ export const validateDate = (
   const now = moment()
 
   const minDate = '2010-01-01'
-  const pastMessage = 'This date is very far in the past'
+  const pastMessage = 'This date is very far in the past/does not have a year'
   const futureMessage = 'This date is in the future'
 
   if (dateObject.isValid()) {
     if (dateObject.isAfter(now, 'year')) {
       return {
         value: dateValue,
-        error: [new Message(futureMessage, 'error', 'validate')]
+        error: [new Message(futureMessage, 'error', 'validate')],
       }
     }
     if (dateObject.isBefore(minDate, 'day')) {
       return {
         value: dateValue,
-        error: [new Message(pastMessage, 'warn', 'validate')]
+        error: [new Message(pastMessage, 'error', 'validate')],
       }
     }
     return {
       value: dateValue,
-      error: null
+      error: null,
     }
   } else if (moment(dateValue, dateFormats.YearFormat, true).isValid()) {
     const yearDateObject = moment(dateValue, dateFormats.YearFormat, true)
     if (yearDateObject.isAfter(now, 'year')) {
       return {
         value: dateValue,
-        error: [new Message(futureMessage, 'warn', 'validate')]
+        error: [new Message(futureMessage, 'error', 'validate')],
       }
     }
     if (yearDateObject.isBefore(minDate, 'day')) {
       return {
         value: dateValue,
-        error: [new Message(pastMessage, 'warn', 'validate')]
+        error: [new Message(pastMessage, 'error', 'validate')],
       }
     }
     return {
       value: dateValue,
-      error: null
+      error: null,
     }
   } else {
     const message = `Could not process date. Date must be in one of the following formats: ${
-      validDateFormats ? validDateFormats.join(', ') : ''
+      validDateFormats
+        ? validDateFormats.join(', ')
+        : 'DD/MM/YYYY, MM/YYYY, YYYY'
     }`
     return {
       value: null,
-      error: [new Message(message, 'error', 'validate')]
+      error: [new Message(message, 'error', 'validate')],
     }
   }
 }
@@ -334,7 +336,7 @@ export function unitMappings(unit: string) {
     therm: 'thm',
     'kilowatt hours': 'kWh',
     'megawatt hours': 'MWh',
-    'gigawatt hours': 'GWh'
+    'gigawatt hours': 'GWh',
   }
 
   if (mappings[finalUnit] !== undefined) {
