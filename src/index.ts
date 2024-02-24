@@ -4,15 +4,12 @@
  *
  * See examples/workbooks/FullExample.ts for a full, working example of a Workbook.
  */
-import { Workbook, } from '@flatfile/configure'
-import {
-    portals,
-    sheets
-} from './sheets';
+import { Workbook } from '@flatfile/configure';
+import { portals, sheets } from './sheets';
 
-export default new Workbook( {
-    name : 'Entry Workbook',
-    namespace : 'entry-workbook',
+export default new Workbook({
+    name: 'Entry Workbook',
+    namespace: 'entry-workbook',
     portals,
     sheets,
-})
+});
