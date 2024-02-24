@@ -1,8 +1,4 @@
-import {
-    scopeOneCategories,
-    scopeThreeCategories,
-    scopeTwoCategories,
-} from './constants';
+import { scopeOneCategories, scopeThreeCategories, scopeTwoCategories } from './constants';
 
 export enum EUserOrgEmailStatus {
     Invited = 'invited',
@@ -26,8 +22,15 @@ export interface UserOrg extends UserOrgBase {
     _id: string;
 }
 
-export type ScopeTwoCategories = typeof scopeTwoCategories[number];
-export type ScopeOneCategories = typeof scopeOneCategories[number];
-export type ScopeThreeCategories = typeof scopeThreeCategories[number];
+export type ScopeTwoCategories = (typeof scopeTwoCategories)[number];
+export type ScopeOneCategories = (typeof scopeOneCategories)[number];
+export type ScopeThreeCategories = (typeof scopeThreeCategories)[number];
 export type EmissionCategories = ScopeOneCategories | ScopeTwoCategories | ScopeThreeCategories;
-export type EmissionScope = 1|2|3;
+export type EmissionScope = 1 | 2 | 3;
+
+// V2 types
+export enum Scope {
+    Scope1 = 'Scope1',
+    Scope2 = 'Scope2',
+    Scope3 = 'Scope3',
+}
