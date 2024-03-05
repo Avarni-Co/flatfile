@@ -117,7 +117,7 @@ export const validateDate = (dateValue: string): { value: string | null; error: 
       };
     }
     return {
-      value: dateValue,
+      value: dateObject.format('DD-MMM-YYYY'),
       error: null,
     };
   } else if (moment(dateValue, dateFormats.YearFormat, true).isValid()) {
@@ -143,7 +143,7 @@ export const validateDate = (dateValue: string): { value: string | null; error: 
       validDateFormats ? validDateFormats.join(', ') : 'DD/MM/YYYY, MM/YYYY, YYYY'
     }`;
     return {
-      value: null,
+      value: dateValue,
       error: [new Message(message, 'error', 'validate')],
     };
   }
