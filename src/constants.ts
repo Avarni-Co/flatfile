@@ -175,6 +175,8 @@ export const supportedCurrencies = [
   'XPF',
   'ZAR',
   'LKR',
+  'KRW',
+  'CLP',
 ];
 
 export const supportedEnergyCountries: { [key: string]: string } = supportedEnergyCountriesLookup;
