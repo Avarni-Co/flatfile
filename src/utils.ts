@@ -327,6 +327,10 @@ export function validateInputUnit(record: FlatfileRecord, session: FlatfileSessi
     if (!valid) {
       checkAndSetValidUnit(inputUnitStr.toLowerCase());
     }
+    // If the input is a valid unit when uppercased then its valid
+    if (!valid) {
+      checkAndSetValidUnit(inputUnitStr.toUpperCase());
+    }
     // If the input has an s (plural) at the end and the singular is valid then its valid
     if (!valid && inputUnitStr.endsWith('s')) {
       checkAndSetValidUnit(inputUnitStr.slice(0, -1));

@@ -127,11 +127,11 @@ export const AvCountryField = ({
     cast: trimValue((value: string | null) => {
       return normaliseCountry(value, countries);
     }),
-    validate: addWarningIfEmpty((value: string | null) => {
+    validate: (value: string | null) => {
       if (!value) return;
       const valid = isCountryValid(value, countries);
       if (!valid) return [new Message(errorMessage, 'error', 'validate')];
-    }),
+    },
   });
 
 export const AvScopeField = makeField(NumberField({}), {
