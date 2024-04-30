@@ -68,6 +68,41 @@ export function arrayToObject(strings: string[], transformer: (str: string) => s
   return result;
 }
 
+export const validateDatev2 = (dateValue: Date): { value: Date | null; error: null | Array<Message> } => {
+  const dateObject = moment(dateValue);
+
+  const now = moment();
+
+  const minDate = '2010-01-01';
+  const pastMessage = 'This date is very far in the past/does not have a year';
+  const futureMessage = 'This date is in the future';
+
+  if (dateObject.isValid()) {
+    if (dateObject.isAfter(now, 'year')) {
+      return {
+        value: dateValue,
+        error: [new Message(futureMessage, 'error', 'validate')],
+      };
+    }
+    if (dateObject.isBefore(minDate, 'day')) {
+      return {
+        value: dateValue,
+        error: [new Message(pastMessage, 'error', 'validate')],
+      };
+    }
+    return {
+      value: dateValue,
+      error: null,
+    };
+  } else {
+    const message = `Could not process date. Date must be in a valid format such as MM/DD/YYYY`;
+    return {
+      value: dateValue,
+      error: [new Message(message, 'error', 'validate')],
+    };
+  }
+};
+
 export const validateDate = (dateValue: string): { value: string | null; error: null | Array<Message> } => {
   let validDateFormats: string[] | undefined;
 
@@ -85,10 +120,10 @@ export const validateDate = (dateValue: string): { value: string | null; error: 
     validDateFormats = ['DD/MM/YYYY', 'DD/MM/YY', 'D/MM/YYYY', 'D/MM/YY', 'D/M/YYYY', 'D/M/YY', 'YYYY'];
   }
 
-  // ! Removed support for MM/DD/YYYY format until we can get it re-implemented with an org setting
   if (dateValue.match(/^((0?[1-9])|10|11|12){1,2}(\/|-|\.)((1[3-9])|(2[0-9])|(3[0-1])){1,2}(\/|-|\.).+$/)) {
+    // ! Removed support for MM/DD/YYYY format until we can get it re-implemented with an org setting
     // Putting the same date formats as the condition above so users can see which date formats they should put instead
-    validDateFormats = ['DD/MM/YYYY', 'DD/MM/YY', 'D/MM/YYYY', 'D/MM/YY', 'D/M/YYYY', 'D/M/YY']; //['MM/DD/YYYY', 'MM/DD/YY', 'MM/D/YYYY', 'MM/D/YY', 'M/D/YYYY', 'M/D/YY', 'YYYY'];
+    validDateFormats = ['DD/MM/YYYY', 'DD/MM/YY', 'D/MM/YYYY', 'D/MM/YY', 'D/M/YYYY', 'D/M/YY'];
   }
 
   if (validDateFormats) {
@@ -119,7 +154,7 @@ export const validateDate = (dateValue: string): { value: string | null; error: 
       };
     }
     return {
-      value: dateObject.format('DD-MMM-YYYY'),
+      value: dateValue,
       error: null,
     };
   } else if (moment(dateValue, dateFormats.YearFormat, true).isValid()) {

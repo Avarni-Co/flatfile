@@ -1,4 +1,4 @@
-import { makeField, Message, OptionField, TextField, NumberField } from '@flatfile/configure';
+import { makeField, Message, OptionField, TextField, NumberField, DateField } from '@flatfile/configure';
 import {
   arrayToObject,
   getCategoryScope,
@@ -11,9 +11,11 @@ import {
   normaliseAmount,
   normaliseCountry,
   validateDate,
+  validateDatev2,
 } from './utils';
-import { supportedCurrencies, supportedEnergyUnits, supportedMassUnits } from './constants';
+import { dateFormats, supportedCurrencies, supportedEnergyUnits, supportedMassUnits } from './constants';
 import { EmissionScope } from './types';
+import moment from 'moment';
 
 type Value = string | null;
 
@@ -55,6 +57,21 @@ export const AvDateField = makeField(TextField({}), {
     }
   },
 });
+
+export const AvDateFieldv2 = DateField({
+  label: 'Date',
+  required: true,
+  egressFormat: (value: Date) => {
+    return moment(value).format(dateFormats.DateFormatToBackend);
+  },
+  validate: (value: Date) => {
+    const validated = validateDatev2(value);
+    if (validated.error) {
+      return validated.error;
+    }
+  },
+});
+
 //export const AvCurrencyField = makeField(OptionField({options:arrayToObject(supportedCurrencies)}),{
 export const AvCurrencyField = makeField(TextField({}), {
   cast: trimValue((value: Value) => {
