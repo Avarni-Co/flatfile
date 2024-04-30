@@ -121,9 +121,7 @@ export const validateDate = (dateValue: string): { value: string | null; error: 
   }
 
   if (dateValue.match(/^((0?[1-9])|10|11|12){1,2}(\/|-|\.)((1[3-9])|(2[0-9])|(3[0-1])){1,2}(\/|-|\.).+$/)) {
-    // ! Removed support for MM/DD/YYYY format until we can get it re-implemented with an org setting
-    // Putting the same date formats as the condition above so users can see which date formats they should put instead
-    validDateFormats = ['DD/MM/YYYY', 'DD/MM/YY', 'D/MM/YYYY', 'D/MM/YY', 'D/M/YYYY', 'D/M/YY'];
+    validDateFormats = ['MM/DD/YYYY', 'MM/DD/YY', 'MM/D/YYYY', 'MM/D/YY', 'M/D/YYYY', 'M/D/YY', 'YYYY'];
   }
 
   if (validDateFormats) {
