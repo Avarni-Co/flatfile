@@ -33,6 +33,7 @@ const travelBaseFields = {
     required: false,
     label: 'GHG Emission Category',
   }),
+  supplier: AvTextField({ required: false, label: 'Supplier' }),
   subOrganisation: AvTextField({ required: false, label: 'Sub-Organisation' }),
 } as { [index in TravelEntryFlatfileRecordKeys]: AnyField };
 
