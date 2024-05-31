@@ -1,3 +1,15 @@
+# Avarni Deployment Instructions
+
+1. npm install
+2. npm run deploy
+
+Make sure to have a .env file (it's currently checked in git. Substitute the SECRET key with the correct values). 
+There are two environments called "test" and "prod". When running npm run deploy 
+make sure that the correct set of .env values are not commented out.
+
+---
+
+
 # Platform SDK Starter
 
 The platform SDK starter is a way to configure your Flatfile Workbook in code.
