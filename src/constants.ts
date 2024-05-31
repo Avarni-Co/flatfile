@@ -59,6 +59,7 @@ for (const countryJSON of countriesJSON) {
 }
 
 const energyCountries = [
+  'new zealand',
   'united states',
   'canada',
   'australia',
