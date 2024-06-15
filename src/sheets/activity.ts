@@ -35,6 +35,7 @@ const activityBaseFields = {
     countries: countriesv2,
     errorMessage: 'Could not validate this country. Please check the guide for a list of valid country names.',
   })({ required: false, label: 'Country' }),
+  location: AvTextField({ required: false, label: 'Location/Address' }),
 } as { [index in ActivityEntryFlatfileRecordKeys]: AnyField };
 
 export const AvActivitySheet = new Sheet('Activity Sheet', activityBaseFields, {
