@@ -3,7 +3,7 @@ import { countriesv2 } from '../constants';
 
 import { AnyField, Portal, Sheet } from '@flatfile/configure';
 import { FlatfileRecord, FlatfileSession } from '@flatfile/hooks';
-import { validateGhgCategory, validateInputUnit } from '../utils';
+import { computeSubOrg, validateGhgCategory, validateInputUnit } from '../utils';
 
 export type ActivityEntryFlatfileRecordKeys = keyof ActivityEntryFlatfileRecord;
 export interface ActivityEntryFlatfileRecord {
@@ -36,13 +36,15 @@ const activityBaseFields = {
     errorMessage: 'Could not validate this country. Please check the guide for a list of valid country names.',
   })({ required: false, label: 'Country' }),
   location: AvTextField({ required: false, label: 'Location/Address' }),
+  subOrganisation: AvTextField({ required: false, label: 'Sub-Organisation' }),
 } as { [index in ActivityEntryFlatfileRecordKeys]: AnyField };
 
 export const AvActivitySheet = new Sheet('Activity Sheet', activityBaseFields, {
   allowCustomFields: true,
-  recordCompute: (record: FlatfileRecord, session: FlatfileSession) => {
+  recordCompute: (record: FlatfileRecord, session: FlatfileSession, logger) => {
     validateInputUnit(record, session);
     validateGhgCategory(record, session);
+    computeSubOrg(record, session, logger);
   },
 });
 
